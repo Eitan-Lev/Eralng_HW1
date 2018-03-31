@@ -16,7 +16,7 @@ TriangleGoodList=({shapes,[{triangle,{dim,2,3}},{triangle,{dim,5,6}},{rectangle,
 NoEllipseList=({shapes,[{triangle,{dim,2,3}},{triangle,{dim,5,6}},{rectangle,{dim,8,9}},{triangle,{dim,11,12}}]}).
 BadList1=({shapes,[{triangle,{dim,2,3}},{circle,{dim,5,6}},{rectangle,{dim,8,9}},{triangle,{dim,11,12}}]}).
 BadList2=({shapes,[{square,{dim,2,3}},{triangle,{dim,5,6}},{rectangle,{dim,8,9}},{triangle,{dim,11,12}}]}).
-BadList3=({shapes,[{triangle,{dim,2,3}},{triangle,{dim,5,6}},{rectangle,{dim,8,9}},{triangle,{dim,11,12}}]}).
+BadList3=({shapes,[{triangle,{dim,2,3}},{triangle,{dim5,6}},{rectangle,{dim,8,9}},{triangle,{dim,11,12}}]}).
 BadList4=({shapes,[{triangle,{dim,2,3}},{ellipse,{dim,5,6}},{rectangle,{dim,8,9}},{triangle,{dim,11,12}}]}).
 BadList5=({shapes,[{triangle,{dim,3}},{triangle,{dim,5,6}},{rectangle,{dim,8,9}},{triangle,{dim,11,12}}]}).
 BadList6=({shapes,[{triangle,{dim,2,3}},{triangle,{dim,5,6}},{rectangle,{dim,9}},{triangle,{dim,11,12}}]}).
@@ -27,6 +27,17 @@ EllipseGoodList=({shapes,[{ellipse,{radius,4,3}},{triangle,{dim,19,6}},{ellipse,
 CircleGoodList=({shapes,[{ellipse,{radius,4,4}},{triangle,{dim,5,6}},{ellipse,{radius,8,9}},{triangle,{dim,11,12}}]}).
 RectangleGoodList=({shapes,[{rectangle,{dim,2,3}},{triangle,{dim,5,6}},{rectangle,{dim,8,9}},{triangle,{dim,11,12}}]}).
 SquareGoodList=({shapes,[{triangle,{dim,2,3}},{rectangle,{dim,5,5}},{rectangle,{dim,9.0,9}},{triangle,{dim,11,12}}]}).
+
+ShapesArea1 = shapes:shapesArea(BadList1).
+ShapesArea2 = shapes:shapesArea(BadList2).
+ShapesArea3 = shapes:shapesArea(BadList3).
+ShapesArea4 = shapes:shapesArea(BadList4).
+ShapesArea5 = shapes:shapesArea(BadList5).
+ShapesArea6 = shapes:shapesArea(BadList6).
+ShapesArea7 = shapes:shapesArea(BadList7).
+ShapesArea8 = shapes:shapesArea(BadList8).
+ShapesArea9 = shapes:shapesArea(BadList9).
+
 
 FilterTriangle(TriangleGoodList).
 FilterEllipse(EllipseGoodList).
@@ -39,7 +50,9 @@ FilterCircle(CircleGoodList).
 FilterTriangle2(TriangleGoodList).
 FilterTriangle2(SquareGoodList).
 
-shapes:squaresArea(SquareGoodList).
+ShapesArea = shapes:shapesArea(SquareGoodList).
+SquaresArea = shapes:squaresArea(SquareGoodList).
+TrianglesArea = shapes:trianglesArea(SquareGoodList).
 
 {shapes,[{triangle,{1,2,3}},{triangle,{4,5,6}},{rectangle,{7,8,9}},{triangle,{10,11,12}}]}
 Test
