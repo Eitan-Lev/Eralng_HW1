@@ -7,15 +7,16 @@
 
 shapesArea(Data) -> _=checkValidData(Data),calculateArea(Data).
 
-squaresArea(Data) -> _=checkValidData(Data),calculateArea((shapesFilter2(square))(Data)).%change to square
+squaresArea(Data) -> shapesArea((shapesFilter2(square))(Data)).
 
-trianglesArea(Data) -> _=checkValidData(Data),calculateArea((shapesFilter(triangle))(Data)).
+trianglesArea(Data) -> shapesArea((shapesFilter(triangle))(Data)).
 
-shapesFilter(X) -> case X of
-  rectangle -> ShapeType = rectangle;
-  triangle -> ShapeType = triangle;
-  ellipse -> ShapeType = ellipse
-end, fun(N) -> (filterList(N, ShapeType)) end.
+shapesFilter(X) ->
+  case X of
+    rectangle -> (fun(N) -> (filterList(N, X)) end);
+    triangle -> (fun(N) -> (filterList(N, X)) end);
+    ellipse -> (fun(N) -> (filterList(N, X)) end)
+  end.
 
 shapesFilter2(X) -> case X of
   square -> fun(N) -> (filterList(N, square)) end;
