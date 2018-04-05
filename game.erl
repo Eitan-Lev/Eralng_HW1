@@ -1,5 +1,7 @@
--module (game).
--export ([canWin/1, nextMove/1, explanation/0]).
+-module(game).
+-export([canWin/1]).
+-export([nextMove/1]).
+-export([explanation/0]).
 
 canWin(N) when N > 0 ->
   if
@@ -10,18 +12,16 @@ canWin(N) when N > 0 ->
 nextMove(N) when N > 0 ->
   case canWin(N) of
     false -> false;
-    true ->
-      if
-        N == 1 -> {true, 1};
-        N == 2 -> {true, 2};
-        N > 2  ->
-          case (canWin(N-2) and canWin(N-3)) of
-            true -> {true, 1};
-            false-> {true, 2}
-          end
+    true when (N =< 2) -> {true,N};
+    _ ->
+      case {canWin(N-1),canWin(N-2)} of %Player 2 possible actions
+        {true,true} -> false;%Player 2 wins either way
+        {true,false} -> {true,2};%Player 2 wins only if Player 1 draws 1
+        {false,_} -> {true,1}%Player 1 can win if he draws 1
       end
   end.
 
-explanation() ->
-  {'Because we also have an opponent in the game, we must consider every option of his moves. That way we are getting a "tree" type of recursion.
-    It is difficult to make the tree recursion behave as a tail recursion'}.
+explanation() -> {'We have an opponent in the game, so we must consider every
+  option of his moves. We get a tree type of recursion. Tail recursion
+  requires saving the memoryy of recursive calls. It is difficult to make
+  the tree recursion behave as a tail recursion'}.
