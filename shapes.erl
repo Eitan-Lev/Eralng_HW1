@@ -5,51 +5,44 @@
 -export([shapesFilter/1]).
 -export([shapesFilter2/1]).
 
-shapesArea(Data) -> _=checkValidData(Data),calculateArea(Data).
+% Wrapper- Starts calculating using the tail recursioive funciton
+shapesArea({shapes, List}) -> shapesArea({shapes,List},0).
+% Tail recursive function, using the helper shapes calculators
+shapesArea({shapes, []}, Sum) -> Sum;
+shapesArea({shapes,[H|T]}, Sum) -> shapesArea({shapes,T},Sum+area(H)).
 
 squaresArea(Data) -> shapesArea((shapesFilter2(square))(Data)).
 
 trianglesArea(Data) -> shapesArea((shapesFilter(triangle))(Data)).
 
-shapesFilter(X) ->
-  case X of
-    rectangle -> (fun(N) -> (filterList(N, X)) end);
-    triangle -> (fun(N) -> (filterList(N, X)) end);
-    ellipse -> (fun(N) -> (filterList(N, X)) end)
-  end.
+shapesFilter(DesiredShape) when
+  ((DesiredShape == rectangle) or
+  (DesiredShape == triangle) or (DesiredShape == ellipse)) ->
+    fun({shapes, List}) -> {shapes,[Shape || Shape <- List,
+      element(1,Shape) =:= DesiredShape,
+      validateShape(Shape)]}
+    end.
 
-shapesFilter2(X) -> case X of
-  square -> fun(N) -> (filterList(N, square)) end;
-  circle -> fun(N) -> (filterList(N, circle)) end;
-  _ -> shapesFilter(X)
+shapesFilter2(DesiredShape) ->
+case DesiredShape of
+  square -> fun({shapes,List}) -> {shapes,[Shape ||
+    Shape={rectangle,{dim,X,X}} <- List, validateShape(rectangle)]} end;
+  circle -> fun({shapes,List}) -> {shapes,[Shape ||
+    Shape={ellipse,{radius,X,X}} <- List], validateShape(ellipse)} end;
+  _ -> shapesFilter(DesiredShape)
 end.
 
-filterSquareCircleList(List,ShapeType) ->
-  [{Y,{_Param1,Param2,Param3}} || {Y,{_Param1,Param2,Param3}} <- List,
-  Y == ShapeType, Param2 == Param3].
+% Helper methods for filtering shapes
+validateShape({ShapeType,{Atom,X,Y}})
+  when ((X > 0) and (Y > 0)) -> validateShape(ShapeType,Atom).
+validateShape(ShapeType,dim)
+  when ((ShapeType =:= rectangle) or (ShapeType == triangle)) -> true;
+validateShape(ellipse,radius) -> true.
 
-filterList({Atom,List}, ShapeType) -> _=checkValidData({Atom,List}),
-  case ShapeType of
-    square -> {Atom,filterSquareCircleList(List,rectangle)};
-    circle -> {Atom,filterSquareCircleList(List,ellipse)};
-    _ -> {shapes,[{Y,{_Param1,_Param2,_Param3}} ||
-    {Y,{_Param1,_Param2,_Param3}} <- List, Y == ShapeType]}
-  end.
-
-checkValidData(Data) ->
-  case Data of
-    {shapes,[]} -> {shapes,[]};
-    {shapes,[{Shape,{Param1,Param2,Param3}}|T]} when
-      ((((Shape == triangle) or (Shape == rectangle)) and (Param1 == dim))
-      or ((Shape == ellipse) and (Param1 == radius))
-      and ((Param2 > 0) and (Param3 > 0))) -> checkValidData({shapes,T})
-  end.
-
-calculateArea(Data) -> calcArea(Data, 0).
-calcArea(Data, Sum) ->
-  case Data of
-    {_, []} -> Sum;
-    {_,[{triangle,{_dim,Base,Height}}|T]} -> calcArea({shapes,T},(Sum + ((Base*Height)/2)));
-    {_,[{rectangle,{_dim,Width,Height}}|T]} -> calcArea({shapes,T},(Sum + (Width*Height)));
-    {_,[{ellipse,{_redius,Radius1,Radius2}}|T]} -> calcArea({shapes,T},(Sum + (math:pi())*Radius1*Radius2))
-  end.
+% Helper methods for calculating the area
+area({rectangle,{dim,Width,Height}}) when ((Width > 0) and (Height > 0)) ->
+  Width * Height;
+area({triangle,{dim,Base, Height}}) when ((Base > 0) and (Height > 0))->
+  Base * Height * 0.5;
+area({ellipse,{radius, Radius1, Radius2}}) when ((Radius1 > 0) and (Radius2 > 0))->
+  Radius1 * Radius2 * math:pi().
