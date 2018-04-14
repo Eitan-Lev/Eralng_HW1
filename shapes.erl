@@ -15,29 +15,31 @@ squaresArea(Data) -> shapesArea((shapesFilter2(square))(Data)).
 
 trianglesArea(Data) -> shapesArea((shapesFilter(triangle))(Data)).
 
-shapesFilter(DesiredShape) when
-  ((DesiredShape == rectangle) or
-  (DesiredShape == triangle) or (DesiredShape == ellipse)) ->
+shapesFilter(WantedType) when
+((WantedType == rectangle) or (WantedType == triangle) or (WantedType == ellipse)) ->
     fun({shapes, List}) -> {shapes,[Shape || Shape <- List,
-      element(1,Shape) =:= DesiredShape,
-      validateShape(Shape)]}
+      validateShape(Shape), element(1,Shape) =:= WantedType]}
+      % validateShape needs to be first or unwanted types wont be validated
     end.
 
-shapesFilter2(DesiredShape) ->
-case DesiredShape of
-  square -> fun({shapes,List}) -> {shapes,[Shape ||
-    Shape={rectangle,{dim,X,X}} <- List, validateShape(rectangle)]} end;
-  circle -> fun({shapes,List}) -> {shapes,[Shape ||
-    Shape={ellipse,{radius,X,X}} <- List], validateShape(ellipse)} end;
-  _ -> shapesFilter(DesiredShape)
-end.
+shapesFilter2(WantedType)
+when ((WantedType /= square) and (WantedType /= circle)) ->
+  shapesFilter(WantedType);
+
+shapesFilter2(WantedType) ->
+case WantedType of
+    square -> fun({shapes, List}) -> {shapes,[OkayShape || OkayShape <- List,
+      validateShape(OkayShape),
+      element(2,element(1,OkayShape)) == element(3,element(1,OkayShape))]} end;
+    circle -> fun({shapes, List}) -> {shapes,[OkayShape || OkayShape <- List,
+      validateShape(OkayShape),
+      element(2,element(1,OkayShape)) == element(3,element(1,OkayShape))]} end
+  end.
 
 % Helper methods for filtering shapes
-validateShape({ShapeType,{Atom,X,Y}})
-  when ((X > 0) and (Y > 0)) -> validateShape(ShapeType,Atom).
-validateShape(ShapeType,dim)
-  when ((ShapeType =:= rectangle) or (ShapeType == triangle)) -> true;
-validateShape(ellipse,radius) -> true.
+validateShape({ellipse,{radius,X,Y}}) when ((X > 0) and (Y > 0)) -> true;
+validateShape({rectangle,{dim,X,Y}}) when ((X > 0) and (Y > 0)) -> true;
+validateShape({triangle,{dim,X,Y}}) when ((X > 0) and (Y > 0)) -> true.
 
 % Helper methods for calculating the area
 area({rectangle,{dim,Width,Height}}) when ((Width > 0) and (Height > 0)) ->
