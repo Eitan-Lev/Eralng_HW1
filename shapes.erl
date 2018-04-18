@@ -30,10 +30,12 @@ shapesFilter2(WantedType) ->
 case WantedType of
     square -> fun({shapes, List}) -> {shapes,[OkayShape || OkayShape <- List,
       validateShape(OkayShape),
-      element(2,element(1,OkayShape)) == element(3,element(1,OkayShape))]} end;
+      element(2,element(2,OkayShape)) == element(3,element(2,OkayShape)),
+      rectangle == element(1,OkayShape)]} end;
     circle -> fun({shapes, List}) -> {shapes,[OkayShape || OkayShape <- List,
       validateShape(OkayShape),
-      element(2,element(1,OkayShape)) == element(3,element(1,OkayShape))]} end
+      element(2,element(2,OkayShape)) == element(3,element(2,OkayShape)),
+      ellipse == element(1,OkayShape)]} end
   end.
 
 % Helper methods for filtering shapes
