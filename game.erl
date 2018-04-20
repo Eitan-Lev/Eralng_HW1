@@ -22,7 +22,6 @@ nextMove(N) when N > 0 ->
   end.
 
 explanation() -> {'We have an opponent in the game, so we must consider every
-  option of his moves.When we do that - we get a tree type of recursion.
-  Tail recursion requires saving the memory of recursive calls, and when we
-  try to do the same for tree recursion it requires a lot of memory.
-  It is difficult to make the tree recursion behave as a tail recursion'}.
+  option of his moves. We get a tree type of recursion. Tail recursion
+  requires saving the memory of recursive calls. It is difficult to make
+  the tree recursion behave as a tail recursion'}.
